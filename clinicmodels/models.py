@@ -34,7 +34,8 @@ class Visit(models.Model):
     class Meta:
         db_table = "visits"
 
-    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, blank=True, null=True)
+    patient = models.ForeignKey(
+        Patient, on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=100)
 
@@ -43,12 +44,14 @@ class Vitals(models.Model):
     class Meta:
         db_table = "vitals"
 
-    visit = models.ForeignKey(Visit, on_delete=models.SET_NULL, blank=True, null=True)
+    visit = models.ForeignKey(
+        Visit, on_delete=models.SET_NULL, blank=True, null=True)
     height = models.DecimalField(decimal_places=2, max_digits=5, default=0)
     weight = models.DecimalField(decimal_places=2, max_digits=5, default=0)
     systolic = models.IntegerField(default=0)
     diastolic = models.IntegerField(default=0)
-    temperature = models.DecimalField(decimal_places=2, max_digits=5, default=0)
+    temperature = models.DecimalField(
+        decimal_places=2, max_digits=5, default=0)
     hiv_positive = models.BooleanField(default=False)
     ptb_positive = models.BooleanField(default=False)
     hepc_positive = models.BooleanField(default=False)
@@ -59,7 +62,8 @@ class PostReferral(models.Model):
     class Meta:
         db_table = "postreferrals"
 
-    visit = models.ForeignKey(Visit, on_delete=models.SET_NULL, blank=True, null=True)
+    visit = models.ForeignKey(
+        Visit, on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
     recorder = models.CharField(max_length=255)
     remarks = models.TextField(blank=True, null=True)
@@ -76,16 +80,21 @@ class Consult(models.Model):
     class Meta:
         db_table = "consults"
 
-    visit = models.ForeignKey(Visit, on_delete=models.SET_NULL, blank=True, null=True)
-    consult_type = models.ForeignKey(ConsultType, on_delete=models.SET_NULL, blank=True, null=True)
+    visit = models.ForeignKey(
+        Visit, on_delete=models.SET_NULL, blank=True, null=True)
+    consult_type = models.ForeignKey(
+        ConsultType, on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField(default=timezone.now)
-    doctor = models.ForeignKey(User, related_name='doctor_create', on_delete=models.SET_NULL, blank=True, null=True)
+    doctor = models.ForeignKey(
+        User, related_name='doctor_create', on_delete=models.SET_NULL, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     diagnosis = models.TextField(blank=True, null=True)
     problems = models.TextField(blank=True, null=True)
     urine_test = models.TextField(blank=True, null=True)
-    hemocue_count = models.DecimalField(decimal_places=2, max_digits=5, default=0)
-    blood_glucose = models.DecimalField(decimal_places=2, max_digits=5, default=0)
+    hemocue_count = models.DecimalField(
+        decimal_places=2, max_digits=5, default=0)
+    blood_glucose = models.DecimalField(
+        decimal_places=2, max_digits=5, default=0)
     referrals = models.TextField(blank=True, null=True)
     chronic_referral = models.BooleanField(blank=True, null=True)
     addendum = models.TextField(blank=True, null=True)
@@ -99,8 +108,10 @@ class VisitConsult(models.Model):
         db_table = "visitconsults"
 
     visit = models.ForeignKey(Visit, on_delete=models.CASCADE)
-    consult = models.ForeignKey(Consult, on_delete=models.SET_NULL, blank=True, null=True)
-    consult_type = models.ForeignKey(ConsultType, on_delete=models.SET_NULL, blank=True, null=True)
+    consult = models.ForeignKey(
+        Consult, on_delete=models.SET_NULL, blank=True, null=True)
+    consult_type = models.ForeignKey(
+        ConsultType, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 class Medication(models.Model):
@@ -118,9 +129,11 @@ class Order(models.Model):
     class Meta:
         db_table = "order"
 
-    medicine = models.ForeignKey(Medication, on_delete=models.SET_NULL, blank=True, null=True)
+    medicine = models.ForeignKey(
+        Medication, on_delete=models.SET_NULL, blank=True, null=True)
     quantity = models.IntegerField(default=0)
-    visit = models.ForeignKey(Visit, on_delete=models.SET_NULL, blank=True, null=True)
+    visit = models.ForeignKey(
+        Visit, on_delete=models.SET_NULL, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     order_status = models.CharField(max_length=255)

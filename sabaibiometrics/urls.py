@@ -20,52 +20,68 @@ from vitals import api as vitals
 from visit import api as visit
 from login import api as login
 from consult import api as consult
+from patient.api import PatientView
 from postreferral import api as postreferral
 from rest_framework_simplejwt import views as jwt_views
-import patient.api as patient
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', login.HelloView.as_view()),
 
     # JWT Token Endpoints
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/', jwt_views.TokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(),
+         name='token_refresh'),
     path('api/token/verify/', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
 
     # Patient Creation/Retrieval Endpoints
-    path('patients/all', patient.get_all_patients, name='get_all_patients'),
-    path('patients/by_name', patient.get_patient_by_name, name='get_patient_by_name'),
-    path('patients/by_id', patient.get_patient_by_id, name='get_patient_by_id'),
-    path('patients/new', patient.create_new_patient, name='new_patient'),
-    path('patients/image_by_id', patient.get_patient_image_by_id, name='patient_image'),
-    path('patients/update_by_id', patient.update_patient, name='patient_update'),
+    # path('patients', patient.list, name='patient_list'),
+    # path('patients/<int:pk>', patient.view, name='patient_view'),
+    # path('patients', patient.create, name='patient_create'),
+    # path('patients/image_by_id',
+    #      patient.get_patient_image_by_id, name='patient_image'),
+    # path('patients/<int:pk>', patient.update, name='patient_update'),
+    path('patients', PatientView.as_view(), name='patients_list'),
+    path('patients/<int:pk>/', PatientView.as_view(), name='patients_detail'),
 
     # Visit Creation/Retrieval Endpoints
     path('visit/new', visit.create_new_visit, name='create_visit'),
     path('visit/update_by_id', visit.update_visit, name='update_visit_by_id'),
     path('visit/by_id', visit.get_visit_by_id, name='get_visit_by_id'),
-    path('visit/by_patient', visit.get_visit_by_patient, name='get_visit_by_patient'),
+    path('visit/by_patient', visit.get_visit_by_patient,
+         name='get_visit_by_patient'),
     path('visit/by_status', visit.get_visit_by_status, name='get_visit_by_status'),
-    path('visit/by_patient_and_status', visit.get_visit_by_patient_and_status, name='get_visit_by_patient_and_status'),
+    path('visit/by_patient_and_status', visit.get_visit_by_patient_and_status,
+         name='get_visit_by_patient_and_status'),
 
     # Vitals Creation/Retrieval Endpoints
     path('vitals/new', vitals.create_new_vitals, name='create_vitals'),
     path('vitals/update_by_id', vitals.update_vitals, name='update_vitals_by_id'),
     path('vitals/by_id', vitals.get_vitals_by_id, name='get_vitals_by_id'),
-    path('vitals/by_visit', vitals.get_vitals_by_visit, name='get_vitals_by_visit'),
-    path('vitals/by_patient', vitals.get_vitals_by_patient, name='get_vitals_by_patient'),
+    path('vitals/by_visit', vitals.get_vitals_by_visit,
+         name='get_vitals_by_visit'),
+    path('vitals/by_patient', vitals.get_vitals_by_patient,
+         name='get_vitals_by_patient'),
 
     # Postreferral Creation/Retrieval Endpoints
-    path('postreferral/new', postreferral.create_new_postreferral, name='create_postreferral'),
-    path('postreferral/update_by_id', postreferral.update_postreferral, name='update_postreferral_by_id'),
-    path('postreferral/by_id', postreferral.get_postreferral_by_id, name='get_postreferral_by_id'),
-    path('postreferral/by_visit', postreferral.get_postreferral_by_visit, name='get_postreferral_by_visit'),
-    path('postreferral/by_patient', postreferral.get_postreferral_by_patient, name='get_postreferral_by_patient'),
+    path('postreferral/new', postreferral.create_new_postreferral,
+         name='create_postreferral'),
+    path('postreferral/update_by_id', postreferral.update_postreferral,
+         name='update_postreferral_by_id'),
+    path('postreferral/by_id', postreferral.get_postreferral_by_id,
+         name='get_postreferral_by_id'),
+    path('postreferral/by_visit', postreferral.get_postreferral_by_visit,
+         name='get_postreferral_by_visit'),
+    path('postreferral/by_patient', postreferral.get_postreferral_by_patient,
+         name='get_postreferral_by_patient'),
 
     # Consult Creation/Retrieval Endpoints
-    path('consulttype/all', consult.get_all_consult_types, name='get_all_consult_types'),
-    path('consulttype/new', consult.create_new_consult_type, name='create_new_consult_type'),
+    path('consulttype/all', consult.get_all_consult_types,
+         name='get_all_consult_types'),
+    path('consulttype/new', consult.create_new_consult_type,
+         name='create_new_consult_type'),
     path('consult/new', consult.create_new_consult, name='create_new_consult')
 
 ]
