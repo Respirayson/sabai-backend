@@ -54,6 +54,7 @@ class PatientView(APIView):
         '''
         try:
             form = PatientForm(request.POST, request.FILES)
+            print(form)
             if form.is_valid():
                 patient = form.save(commit=False)
                 patient.save()
@@ -76,7 +77,6 @@ class PatientView(APIView):
                                or None, instance=patient)
             if form.is_valid():
                 patient = form.save()
-                print(patient)
                 response = serializers.serialize("json", [patient, ])
                 return HttpResponse(response, content_type="application/json")
 
@@ -87,6 +87,13 @@ class PatientView(APIView):
         except DataError as e:
             return JsonResponse({"message": str(e)}, status=400)
 
+    def delete(self, request, pk):
+        try:
+            patient = Patient.objects.get(pk=pk)
+            patient.delete()
+            return HttpResponse(status=204)
+        except ObjectDoesNotExist as e:
+            return JsonResponse({"message": str(e)}, status=404)
 
 # @api_view(['GET'])
 # def get_patient_image_by_id(request):

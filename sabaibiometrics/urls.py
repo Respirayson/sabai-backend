@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from vitals import api as vitals
 from visit import api as visit
@@ -37,14 +39,8 @@ urlpatterns = [
     path('api/token/verify/', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
 
     # Patient Creation/Retrieval Endpoints
-    # path('patients', patient.list, name='patient_list'),
-    # path('patients/<int:pk>', patient.view, name='patient_view'),
-    # path('patients', patient.create, name='patient_create'),
-    # path('patients/image_by_id',
-    #      patient.get_patient_image_by_id, name='patient_image'),
-    # path('patients/<int:pk>', patient.update, name='patient_update'),
     path('patients', PatientView.as_view(), name='patients_list'),
-    path('patients/<int:pk>/', PatientView.as_view(), name='patients_detail'),
+    path('patients/<int:pk>', PatientView.as_view(), name='patients_detail'),
 
     # Visit Creation/Retrieval Endpoints
     path('visit/new', visit.create_new_visit, name='create_visit'),
@@ -85,3 +81,5 @@ urlpatterns = [
     path('consult/new', consult.create_new_consult, name='create_new_consult')
 
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -134,4 +134,14 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
+
+# The directory where Django should store your static files when you run "python manage.py collectstatic"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# The URL that your static files will be served from
 STATIC_URL = '/static/'
+
+# The directories where Django will look for additional static files
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
