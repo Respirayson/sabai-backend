@@ -24,6 +24,7 @@ from login import api as login
 from consult import api as consult
 from patient.api import PatientView
 from postreferral import api as postreferral
+from medication.api import MedicationView
 from rest_framework_simplejwt import views as jwt_views
 
 
@@ -78,7 +79,11 @@ urlpatterns = [
          name='get_all_consult_types'),
     path('consulttype/new', consult.create_new_consult_type,
          name='create_new_consult_type'),
-    path('consult/new', consult.create_new_consult, name='create_new_consult')
+    path('consult/new', consult.create_new_consult, name='create_new_consult'),
+
+    # Medication Creation/Retrieval Endpoints
+    path('medications', MedicationView.as_view(), name='medications_list'),
+    path('medications/<int:pk>', MedicationView.as_view(), name='medications_detail'),
 
 ]
 
