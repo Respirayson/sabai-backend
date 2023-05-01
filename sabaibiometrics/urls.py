@@ -31,16 +31,16 @@ from rest_framework_simplejwt import views as jwt_views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('login/', LoginView.as_view()),
-    path('signup/', SignUpView.as_view()),
+    path('admin', admin.site.urls),
+    path('login', LoginView.as_view()),
+    path('signup', SignUpView.as_view()),
 
     # JWT Token Endpoints
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(),
+    path('api/token', jwt_views.TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(),
+    path('api/token/refresh', jwt_views.TokenRefreshView.as_view(),
          name='token_refresh'),
-    path('api/token/verify/', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/verify', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
 
     # Patient Endpoints
     path('patients', PatientView.as_view(), name='patients_list'),
@@ -81,7 +81,8 @@ urlpatterns = [
 
     # Medication Creation/Retrieval Endpoints
     path('medications', MedicationView.as_view(), name='medications_list'),
-    path('medications/<int:pk>', MedicationView.as_view(), name='medications_detail'),
+    path('medications/<int:pk>', MedicationView.as_view(),
+         name='medications_detail'),
 
 
     # Order Creation/Retrieval Endpoints
