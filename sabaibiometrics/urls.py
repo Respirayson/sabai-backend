@@ -25,6 +25,7 @@ from consult import api as consult
 from patient.api import PatientView
 from postreferral import api as postreferral
 from medication.api import MedicationView
+from order.api import OrderView
 from rest_framework_simplejwt import views as jwt_views
 
 
@@ -84,6 +85,11 @@ urlpatterns = [
     # Medication Creation/Retrieval Endpoints
     path('medications', MedicationView.as_view(), name='medications_list'),
     path('medications/<int:pk>', MedicationView.as_view(), name='medications_detail'),
+
+
+    # Order Creation/Retrieval Endpoints
+    path('orders', OrderView.as_view(), name='orders_list'),
+    path('orders/<int:pk>', OrderView.as_view(), name='orders_detail'),
 
 ]
 
