@@ -35,7 +35,7 @@ class Visit(models.Model):
         db_table = "visits"
 
     patient = models.ForeignKey(
-        Patient, on_delete=models.SET_NULL, blank=True, null=True)
+        Patient, on_delete=models.SET_NULL, null=True)
     date = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=100)
 
