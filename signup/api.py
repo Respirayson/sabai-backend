@@ -2,7 +2,7 @@ import json
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from signup.forms import SignUpForm
 
 

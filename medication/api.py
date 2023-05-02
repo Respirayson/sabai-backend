@@ -29,7 +29,8 @@ class MedicationView(APIView):
             medications = Medication.objects.all()
 
             if (medication_name):
-                medications = medications.filter(name__icontains=medication_name)
+                medications = medications.filter(
+                    name__icontains=medication_name)
             response = serializers.serialize("json", medications)
             return HttpResponse(response, content_type='application/json')
         except ValueError as e:
@@ -37,7 +38,7 @@ class MedicationView(APIView):
 
     def get_object(self, pk):
         try:
-            medication = medication.objects.get(pk=pk)
+            medication = Medication.objects.get(pk=pk)
             response = serializers.serialize("json", [medication])
             return HttpResponse(response, content_type='application/json')
         except ObjectDoesNotExist as e:
@@ -53,7 +54,7 @@ class MedicationView(APIView):
         '''
         try:
             form = MedicationForm(json.loads(request.body
-                                                or None))
+                                             or None))
             if form.is_valid():
                 medication = form.save(commit=False)
                 medication.save()
@@ -64,16 +65,16 @@ class MedicationView(APIView):
         except DataError as e:
             return JsonResponse({"message": str(e)}, status=400)
 
-    def put(self, request, pk):
+    def patch(self, request, pk):
         '''
-        Update medication data based on the parameters
+        PATCH request to update medication data based on the parameters
         :param request: POST with data
         :return: JSON Response with new data, or error
         '''
         try:
-            medication = medication.objects.get(pk=pk)
+            medication = Medication.objects.get(pk=pk)
             form = MedicationForm(json.loads(request.body)
-                               or None, instance=medication)
+                                  or None, instance=medication)
             if form.is_valid():
                 medication = form.save()
                 response = serializers.serialize("json", [medication, ])
@@ -88,7 +89,7 @@ class MedicationView(APIView):
 
     def delete(self, request, pk):
         try:
-            medication = medication.objects.get(pk=pk)
+            medication = Medication.objects.get(pk=pk)
             medication.delete()
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:

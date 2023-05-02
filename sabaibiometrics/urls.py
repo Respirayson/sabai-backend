@@ -22,6 +22,7 @@ from vitals import api as vitals
 from visit.api import VisitView
 from login.api import LoginView
 from signup.api import SignUpView
+from user.api import UserView
 from consult import api as consult
 from patient.api import PatientView
 from postreferral import api as postreferral
@@ -33,7 +34,10 @@ from rest_framework_simplejwt import views as jwt_views
 urlpatterns = [
     path('admin', admin.site.urls),
     path('login', LoginView.as_view()),
-    path('signup', SignUpView.as_view()),
+    path('signup', SignUpView.as_view(), name='signup_list'),
+    path('users', UserView.as_view(), name='users_list'),
+    path('users/<int:pk>', UserView.as_view(), name='user_detail'),
+
 
     # JWT Token Endpoints
     path('api/token', jwt_views.TokenObtainPairView.as_view(),
@@ -44,11 +48,11 @@ urlpatterns = [
 
     # Patient Endpoints
     path('patients', PatientView.as_view(), name='patients_list'),
-    path('patients/<int:pk>', PatientView.as_view(), name='patients_detail'),
+    path('patients/<int:pk>', PatientView.as_view(), name='patient_detail'),
 
     # Visit Endpoints
     path('visits', VisitView.as_view(), name='visits_list'),
-    path('visits/<int:pk>', VisitView.as_view(), name='visits_detail'),
+    path('visits/<int:pk>', VisitView.as_view(), name='visit_detail'),
 
 
     # Vitals Endpoints
@@ -82,12 +86,12 @@ urlpatterns = [
     # Medication Creation/Retrieval Endpoints
     path('medications', MedicationView.as_view(), name='medications_list'),
     path('medications/<int:pk>', MedicationView.as_view(),
-         name='medications_detail'),
+         name='medication_detail'),
 
 
     # Order Creation/Retrieval Endpoints
     path('orders', OrderView.as_view(), name='orders_list'),
-    path('orders/<int:pk>', OrderView.as_view(), name='orders_detail'),
+    path('orders/<int:pk>', OrderView.as_view(), name='order_detail'),
 
 ]
 
