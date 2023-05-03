@@ -3,15 +3,10 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import DataError
 from django.http import JsonResponse, HttpResponse
-from django.utils.datastructures import MultiValueDictKeyError
-from django.views.decorators.csrf import csrf_exempt
 
 from clinicmodels.models import Patient
 from patient.forms import PatientForm
-from django.contrib.auth.models import User
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes, api_view
 from rest_framework.views import APIView
 
 """
@@ -56,8 +51,7 @@ class PatientView(APIView):
             form = PatientForm(request.POST, request.FILES)
             print(form)
             if form.is_valid():
-                patient = form.save(commit=False)
-                patient.save()
+                patient = form.save()
                 response = serializers.serialize("json", [patient, ])
                 return HttpResponse(response, content_type="application/json")
             else:
@@ -90,34 +84,8 @@ class PatientView(APIView):
     def delete(self, request, pk):
         try:
             patient = Patient.objects.get(pk=pk)
+            patient.picture.delete()
             patient.delete()
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
-
-# @api_view(['GET'])
-# def get_patient_image_by_id(request):
-#     '''
-#     GET image of patient by id
-#     :param request: GET with parameter id of patient you want the image of
-#     :return: FileResponse if image is found, 404 if not
-#     '''
-#     try:
-#         if 'id' not in request.GET:
-#             return JsonResponse({"message": "GET: parameter 'id' not found"}, status=400)
-#         patient_id = request.GET['id']
-#         patient = Patient.objects.get(pk=patient_id)
-#         image = patient.picture
-#         if "jpeg" in image.name.lower() or "jpg" in image.name.lower():
-#             return HttpResponse(image.file.read(), content_type="image/jpeg")
-#         elif "png" in image.name.lower():
-#             return HttpResponse(image.file.read(), content_type="image/png")
-#         else:
-#             return JsonResponse({"message": "Patient image is in the wrong format"}, status=400)
-#     except ObjectDoesNotExist as e:
-#         return JsonResponse({"message": str(e)}, status=404)
-#     except ValueError as e:
-#         return JsonResponse({"message": str(e)}, status=400)
-
-
-# @api_view(['POST'])

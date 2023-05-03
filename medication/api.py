@@ -56,8 +56,7 @@ class MedicationView(APIView):
             form = MedicationForm(json.loads(request.body
                                              or None))
             if form.is_valid():
-                medication = form.save(commit=False)
-                medication.save()
+                medication = form.save()
                 response = serializers.serialize("json", [medication, ])
                 return HttpResponse(response, content_type="application/json")
             else:

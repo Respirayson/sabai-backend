@@ -4,15 +4,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import DataError
 from django.http import JsonResponse, HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
-from django.views.decorators.csrf import csrf_exempt
 
+
+from rest_framework.views import APIView
 from clinicmodels.models import Order
 from order.forms import OrderForm
-from django.contrib.auth.models import User
+from sabaibiometrics.serializers.order_serializer import OrderSerializer
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes, api_view
-from rest_framework.views import APIView
 
 """
 Handles all operations regarding the retrieval, update of order models.
@@ -30,16 +28,16 @@ class OrderView(APIView):
 
             if (order_name):
                 orders = orders.filter(name__icontains=order_name)
-            response = serializers.serialize("json", orders)
-            return HttpResponse(response, content_type='application/json')
+            serializer = OrderSerializer(orders, many=True)
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ValueError as e:
             return JsonResponse({"message": str(e)}, status=400)
 
     def get_object(self, pk):
         try:
             order = order.objects.get(pk=pk)
-            response = serializers.serialize("json", [order])
-            return HttpResponse(response, content_type='application/json')
+            serializer = OrderSerializer(order)
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
         except ValueError as e:
@@ -53,12 +51,11 @@ class OrderView(APIView):
         '''
         try:
             form = OrderForm(json.loads(request.body
-                                                or None))
+                                        or None))
             if form.is_valid():
-                order = form.save(commit=False)
-                order.save()
-                response = serializers.serialize("json", [order, ])
-                return HttpResponse(response, content_type="application/json")
+                order = form.save()
+                serializer = OrderSerializer(order)
+                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
             else:
                 return JsonResponse(form.errors, status=400)
         except DataError as e:
@@ -72,12 +69,12 @@ class OrderView(APIView):
         '''
         try:
             order = Order.objects.get(pk=pk)
-            form = orderForm(json.loads(request.body)
-                               or None, instance=order)
+            form = OrderForm(json.loads(request.body)
+                             or None, instance=order)
             if form.is_valid():
                 order = form.save()
-                response = serializers.serialize("json", [order, ])
-                return HttpResponse(response, content_type="application/json")
+                serializer = OrderSerializer(order)
+                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
 
             else:
                 return JsonResponse(form.errors, status=400)

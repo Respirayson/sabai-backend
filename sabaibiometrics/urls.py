@@ -18,12 +18,12 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from vitals import api as vitals
+from vitals.api import VitalsView
 from visit.api import VisitView
 from login.api import LoginView
 from signup.api import SignUpView
 from user.api import UserView
-from consult import api as consult
+from consult.api import ConsultView
 from patient.api import PatientView
 from postreferral import api as postreferral
 from medication.api import MedicationView
@@ -56,13 +56,24 @@ urlpatterns = [
 
 
     # Vitals Endpoints
-    path('vitals/new', vitals.create_new_vitals, name='create_vitals'),
-    path('vitals/update_by_id', vitals.update_vitals, name='update_vitals_by_id'),
-    path('vitals/by_id', vitals.get_vitals_by_id, name='get_vitals_by_id'),
-    path('vitals/by_visit', vitals.get_vitals_by_visit,
-         name='get_vitals_by_visit'),
-    path('vitals/by_patient', vitals.get_vitals_by_patient,
-         name='get_vitals_by_patient'),
+    path('vitals', VitalsView.as_view(), name='vitals_list'),
+    path('vitals/<int:pk>', VitalsView.as_view(), name='vitals_detail'),
+
+    # Consult Endpoints
+    path('consults', ConsultView.as_view(), name='consults_list'),
+    path('consults/<int:pk>', ConsultView.as_view(), name='consult_detail'),
+
+
+    # Medication Creation/Retrieval Endpoints
+    path('medications', MedicationView.as_view(), name='medications_list'),
+    path('medications/<int:pk>', MedicationView.as_view(),
+         name='medication_detail'),
+
+
+    # Order Creation/Retrieval Endpoints
+    path('orders', OrderView.as_view(), name='orders_list'),
+    path('orders/<int:pk>', OrderView.as_view(), name='order_detail'),
+
 
     # Postreferral Endpoints
     path('postreferral/new', postreferral.create_new_postreferral,
@@ -75,23 +86,6 @@ urlpatterns = [
          name='get_postreferral_by_visit'),
     path('postreferral/by_patient', postreferral.get_postreferral_by_patient,
          name='get_postreferral_by_patient'),
-
-    # Consult Endpoints
-    path('consulttype/all', consult.get_all_consult_types,
-         name='get_all_consult_types'),
-    path('consulttype/new', consult.create_new_consult_type,
-         name='create_new_consult_type'),
-    path('consult/new', consult.create_new_consult, name='create_new_consult'),
-
-    # Medication Creation/Retrieval Endpoints
-    path('medications', MedicationView.as_view(), name='medications_list'),
-    path('medications/<int:pk>', MedicationView.as_view(),
-         name='medication_detail'),
-
-
-    # Order Creation/Retrieval Endpoints
-    path('orders', OrderView.as_view(), name='orders_list'),
-    path('orders/<int:pk>', OrderView.as_view(), name='order_detail'),
 
 ]
 

@@ -3,12 +3,11 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import DataError
 from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
-
-from clinicmodels.models import Patient, Visit, VisitConsult, ConsultType
-from visit.forms import VisitForm
 from rest_framework.views import APIView
+
+from clinicmodels.models import Visit
+from visit.forms import VisitForm
+from sabaibiometrics.serializers.visit_serializer import VisitSerializer
 
 
 class VisitView(APIView):
@@ -20,13 +19,15 @@ class VisitView(APIView):
             status = request.GET.get('status', '')
             patient = request.GET.get('patient', '')
 
-            visits = Visit.objects.all()
+            visits = Visit.objects.select_related('patient')
             if status:
                 visits = visits.filter(status=status)
             if patient:
                 visits = visits.filter(patient=patient)
-            response = serializers.serialize("json", visits)
-            return HttpResponse(response, content_type='application/json')
+
+            serializer = VisitSerializer(visits, many=True)
+
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
         except ValueError as e:
@@ -34,9 +35,9 @@ class VisitView(APIView):
 
     def get_object(self, pk):
         try:
-            visit = Visit.objects.get(pk=pk)
-            response = serializers.serialize("json", [visit])
-            return HttpResponse(response, content_type='application/json')
+            visit = Visit.objects.select_related('patient').get(pk=pk)
+            serializer = VisitSerializer(visit)
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
         except ValueError as e:
@@ -49,13 +50,12 @@ class VisitView(APIView):
         :return: Http Response with corresponding status code
         '''
         try:
-            form = VisitForm(json.loads(request.body)
-                             or None)
+            data = json.loads(request.body) or None
+            form = VisitForm(data)
             if form.is_valid():
-                visit = form.save(commit=False)
-                visit.save()
-                response = serializers.serialize("json", [visit, ])
-                return HttpResponse(response, content_type="application/json")
+                visit = form.save()
+                serializer = VisitSerializer(visit)
+                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
             else:
                 return JsonResponse(form.errors, status=400)
         except DataError as e:
@@ -73,8 +73,8 @@ class VisitView(APIView):
                              or None, instance=visit)
             if form.is_valid():
                 visit = form.save()
-                response = serializers.serialize("json", [visit, ])
-                return HttpResponse(response, content_type="application/json")
+                serializer = VisitSerializer(visit)
+                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
 
             else:
                 return JsonResponse(form.errors, status=400)
