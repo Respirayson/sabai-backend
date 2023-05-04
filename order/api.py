@@ -24,10 +24,14 @@ class OrderView(APIView):
             return self.get_object(pk)
         try:
             order_name = request.GET.get('name', '')
+            order_status = request.GET.get('order_status', '')
             orders = Order.objects.all()
 
-            if (order_name):
+            if order_name:
                 orders = orders.filter(name__icontains=order_name)
+            if order_status:
+                orders = orders.filter(order_status=order_status)
+
             serializer = OrderSerializer(orders, many=True)
             return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ValueError as e:

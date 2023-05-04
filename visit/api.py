@@ -18,13 +18,15 @@ class VisitView(APIView):
         try:
             status = request.GET.get('status', '')
             patient = request.GET.get('patient', '')
+            date = request.GET.get('date', '')
 
             visits = Visit.objects.select_related('patient')
             if status:
                 visits = visits.filter(status=status)
             if patient:
                 visits = visits.filter(patient=patient)
-
+            if date:
+                visits = visits.filter(date=date)
             serializer = VisitSerializer(visits, many=True)
 
             return HttpResponse(json.dumps(serializer.data), content_type='application/json')

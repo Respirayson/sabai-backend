@@ -1,15 +1,29 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-class LoginView(APIView):
-    permission_classes = (IsAuthenticated,)
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
 
-    def get(self, request):
-        content = {'message': 'Hello, World!'}
-        return Response(content)
+        # Add custom claims
+        token['id'] = user.id
+        token['username'] = user.username
 
-    def post(self, request):
-        if not request.data:
-            return Response({"message": "Please provide username and password"}, status='400')
+        return token
+
+
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.user
+            response.data['id'] = user.id
+            response.data['username'] = user.username
+
+        return response

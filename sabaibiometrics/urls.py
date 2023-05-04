@@ -33,8 +33,8 @@ from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('login', LoginView.as_view()),
-    path('signup', SignUpView.as_view(), name='signup_list'),
+    path('login', LoginView.as_view(), name='login'),
+    path('signup', SignUpView.as_view(), name='signup'),
     path('users', UserView.as_view(), name='users_list'),
     path('users/<int:pk>', UserView.as_view(), name='user_detail'),
 
