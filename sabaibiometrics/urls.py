@@ -35,8 +35,6 @@ urlpatterns = [
     path('admin', admin.site.urls),
     path('login', LoginView.as_view()),
     path('signup', SignUpView.as_view(), name='signup_list'),
-    path('users', UserView.as_view(), name='users_list'),
-    path('users/<int:pk>', UserView.as_view(), name='user_detail'),
 
 
     # JWT Token Endpoints
@@ -44,11 +42,19 @@ urlpatterns = [
          name='token_obtain_pair'),
     path('api/token/refresh', jwt_views.TokenRefreshView.as_view(),
          name='token_refresh'),
-    path('api/token/verify', jwt_views.TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/verify', jwt_views.TokenVerifyView.as_view(),
+         name='token_verify'),
+
+
+    # User Endpoints
+    path('users', UserView.as_view(), name='users_list'),
+    path('users/<int:pk>', UserView.as_view(), name='user_detail'),
+
 
     # Patient Endpoints
     path('patients', PatientView.as_view(), name='patients_list'),
     path('patients/<int:pk>', PatientView.as_view(), name='patient_detail'),
+
 
     # Visit Endpoints
     path('visits', VisitView.as_view(), name='visits_list'),

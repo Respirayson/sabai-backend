@@ -12,7 +12,7 @@ class UserView(APIView):
         try:
             users = User.objects.all()
             response = serializers.serialize(
-                "json", users, fields=['username'])
+                "json", users, fields=['username', 'password'])
             return HttpResponse(response, content_type='application/json')
         except ValueError as e:
             return JsonResponse({"message": str(e)}, status=400)

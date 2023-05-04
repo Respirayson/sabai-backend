@@ -117,8 +117,8 @@ class Order(models.Model):
     medicine = models.ForeignKey(
         Medication, on_delete=models.SET_NULL, blank=True, null=True)
     quantity = models.IntegerField(default=0)
-    visit = models.ForeignKey(
-        Visit, on_delete=models.SET_NULL, blank=True, null=True)
+    consult = models.ForeignKey(
+        Consult, on_delete=models.SET_NULL, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     remarks = models.TextField(blank=True, null=True)
     order_status = models.CharField(max_length=255)
