@@ -65,7 +65,7 @@ class OrderView(APIView):
         except DataError as e:
             return JsonResponse({"message": str(e)}, status=400)
 
-    def put(self, request, pk):
+    def patch(self, request, pk):
         '''
         Update order data based on the parameters
         :param request: POST with data

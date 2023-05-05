@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from clinicmodels.models import Visit, Consult
 from consult.forms import ConsultForm
+from sabaibiometrics.serializers.consult_serializer import ConsultSerializer
 
 
 class ConsultView(APIView):
@@ -20,16 +21,16 @@ class ConsultView(APIView):
         try:
             consults = Consult.objects.all()
 
-            response = serializers.serialize("json", consults)
-            return HttpResponse(response, content_type='application/json')
+            serializer = ConsultSerializer(consults, many=True)
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ValueError as e:
             return JsonResponse({"message": str(e)}, status=400)
 
     def get_object(self, pk):
         try:
             consult = Consult.objects.get(pk=pk)
-            response = serializers.serialize("json", [consult])
-            return HttpResponse(response, content_type='application/json')
+            serializer = ConsultSerializer(consult)
+            return HttpResponse(json.dumps(serializer.data), content_type='application/json')
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
         except ValueError as e:
@@ -55,8 +56,8 @@ class ConsultView(APIView):
             consult_form = ConsultForm(data)
             if consult_form.is_valid():
                 consult = consult_form.save()
-                response = serializers.serialize("json", [consult, ])
-                return HttpResponse(response, content_type='application/json')
+                serializer = ConsultSerializer(consult)
+                return HttpResponse(json.dumps(serializer.data), content_type='application/json')
             else:
                 return JsonResponse({"message": consult_form.errors}, status=400)
         except ObjectDoesNotExist as e:
@@ -76,8 +77,8 @@ class ConsultView(APIView):
                                or None, instance=consult)
             if form.is_valid():
                 consult = form.save()
-                response = serializers.serialize("json", [consult, ])
-                return HttpResponse(response, content_type="application/json")
+                serializer = ConsultSerializer(consult)
+                return HttpResponse(json.dumps(serializer.data), content_type='application/json')
 
             else:
                 return JsonResponse(form.errors, status=400)
@@ -93,33 +94,3 @@ class ConsultView(APIView):
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
-
-
-# @api_view(['GET'])
-# def get_all_consult_types(request):
-#     try:
-#         consulttypes = ConsultType.objects.all()
-#         if consulttypes.count() == 0:
-#             return JsonResponse({"message": "ConsultType matching query does not exist"}, status=404)
-#         response = serializers.serialize("json", consulttypes)
-#         return HttpResponse(response, content_type='application/json')
-#     except ObjectDoesNotExist as e:
-#         return JsonResponse({"message": str(e)}, status=404)
-#     except DataError as e:
-#         return JsonResponse({"message": str(e)}, status=400)
-
-
-# @api_view(['POST'])
-# def create_new_consult_type(request):
-#     try:
-#         if 'consult_type' not in request.POST:
-#             return JsonResponse({"message": "POST: parameter 'consult_type' not found"}, status=400)
-#         consult_type_field = request.POST['consult_type']
-#         consulttype = ConsultType(type=consult_type_field)
-#         consulttype.save()
-#         response = serializers.serialize("json", [consulttype, ])
-#         return HttpResponse(response, content_type='application/json')
-#     except ObjectDoesNotExist as e:
-#         return JsonResponse({"message": str(e)}, status=404)
-#     except DataError as e:
-#         return JsonResponse({"message": str(e)}, status=400)

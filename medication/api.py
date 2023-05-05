@@ -3,16 +3,12 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import DataError
 from django.http import JsonResponse, HttpResponse
-from django.utils.datastructures import MultiValueDictKeyError
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
 
 from clinicmodels.models import Medication
 from medication.forms import MedicationForm
-from django.contrib.auth.models import User
+from sabaibiometrics.serializers.medication_serializer import MedicationSerializer
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes, api_view
-from rest_framework.views import APIView
 
 """
 Handles all operations regarding the retrieval, update of medication models.
@@ -72,15 +68,16 @@ class MedicationView(APIView):
         '''
         try:
             medication = Medication.objects.get(pk=pk)
-            form = MedicationForm(json.loads(request.body)
-                                  or None, instance=medication)
-            if form.is_valid():
-                medication = form.save()
-                response = serializers.serialize("json", [medication, ])
-                return HttpResponse(response, content_type="application/json")
+            serializer = MedicationSerializer(
+                medication, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
 
             else:
-                return JsonResponse(form.errors, status=400)
+                return JsonResponse(serializer.errors, status=400)
+
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
         except DataError as e:
@@ -93,30 +90,3 @@ class MedicationView(APIView):
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
-
-# @api_view(['GET'])
-# def get_medication_image_by_id(request):
-#     '''
-#     GET image of medication by id
-#     :param request: GET with parameter id of medication you want the image of
-#     :return: FileResponse if image is found, 404 if not
-#     '''
-#     try:
-#         if 'id' not in request.GET:
-#             return JsonResponse({"message": "GET: parameter 'id' not found"}, status=400)
-#         medication_id = request.GET['id']
-#         medication = medication.objects.get(pk=medication_id)
-#         image = medication.picture
-#         if "jpeg" in image.name.lower() or "jpg" in image.name.lower():
-#             return HttpResponse(image.file.read(), content_type="image/jpeg")
-#         elif "png" in image.name.lower():
-#             return HttpResponse(image.file.read(), content_type="image/png")
-#         else:
-#             return JsonResponse({"message": "medication image is in the wrong format"}, status=400)
-#     except ObjectDoesNotExist as e:
-#         return JsonResponse({"message": str(e)}, status=404)
-#     except ValueError as e:
-#         return JsonResponse({"message": str(e)}, status=400)
-
-
-# @api_view(['POST'])
