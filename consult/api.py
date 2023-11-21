@@ -15,7 +15,7 @@ from sabaibiometrics.serializers.consult_serializer import ConsultSerializer
 
 class ConsultView(APIView):
     def get(self, request, pk=None):
-        pk = request.query_params.get("pk")
+        pk = request.query_params.get("visit")
         if pk is not None:
             return self.get_object(pk)
         try:
@@ -59,9 +59,7 @@ class ConsultView(APIView):
             visit_id = data["visit"]
             doctor_id = data["doctor"]
             Visit.objects.get(pk=visit_id)
-            print(f"hello {visit_id} {doctor_id}")
             User.objects.get(pk=doctor_id)
-            print("check")
 
             consult_form = ConsultForm(data)
             if consult_form.is_valid():
@@ -85,7 +83,8 @@ class ConsultView(APIView):
         """
         try:
             consult = Consult.objects.get(pk=pk)
-            form = ConsultForm(json.loads(request.body) or None, instance=consult)
+            form = ConsultForm(json.loads(request.body)
+                               or None, instance=consult)
             if form.is_valid():
                 consult = form.save()
                 serializer = ConsultSerializer(consult)
