@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+import json
 
 
 class UserView(APIView):
@@ -35,3 +36,15 @@ class UserView(APIView):
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:
             return JsonResponse({"message": str(e)}, status=404)
+            
+
+    def post(self, request):
+        data = json.loads(request.body)
+        username = data.get('username')
+        if not (username):
+            return JsonResponse({"status": "error", "errors": {"username": "This field is required."}}, status=400)
+        
+        user = User.objects.create(username=username)
+        user.set_unusable_password()
+        user.save()
+        return JsonResponse({"user": {"id": user.id, "username": user.username, }}, status=201)
