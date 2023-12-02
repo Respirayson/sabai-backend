@@ -47,35 +47,25 @@ class VitalsView(APIView):
         :return: Http Response with corresponding status code
         '''
         try:
-            data = json.loads(request.body) or None
-            form = VitalsForm(data)
-            if form.is_valid():
-                vitals = form.save()
-                serializer = VitalsSerializer(vitals)
-                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
-            else:
-                return JsonResponse(form.errors, status=400)
-        except DataError as e:
-            return JsonResponse({"message": str(e)}, status=400)
-
-    def patch(self, request, pk):
-        '''
-        PATCH request to update existing vitals
-        :param request: PATCH request with the required parameters for update.
-        :param pk: Primary key of the vitals record to be updated.
-        :return: Http Response with corresponding status code
-        '''
-        try:
             # Retrieve existing vitals record
-            visit = Visit.objects.get(pk=pk)
+            visit = Visit.objects.get(pk=request.data['visit'])
+
+            if not Vitals.objects.filter(visit=visit).exists():
+                data = request.data or None
+                form = VitalsForm(data)
+                if form.is_valid():
+                    vitals = form.save()
+                    serializer = VitalsSerializer(vitals)
+                    return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+                else:
+                    return JsonResponse(form.errors, status=400)
+
             vitals = Vitals.objects.get(visit=visit)
             
-            print(vitals)
             # Parse the request body and create a form instance with partial=True
-            print(request.data)
+            request.data.pop('visit')
+
             form = VitalsSerializer(vitals, data=request.data, partial=True)
-            print(form.is_valid())
-            print(form.errors)
             if form.is_valid():
                 form.save()
                 return HttpResponse(form.data, content_type="application/json")
@@ -86,6 +76,46 @@ class VitalsView(APIView):
             return JsonResponse({"message": "Vitals record not found"}, status=404)
         except DataError as e:
             return JsonResponse({"message": str(e)}, status=400)
+
+    # def patch(self, request, pk):
+    #     '''
+    #     PATCH request to update existing vitals
+    #     :param request: PATCH request with the required parameters for update.
+    #     :param pk: Primary key of the vitals record to be updated.
+    #     :return: Http Response with corresponding status code
+    #     '''
+    #     try:
+    #         # Retrieve existing vitals record
+    #         visit = Visit.objects.get(pk=pk)
+
+    #         if not Vitals.objects.filter(visit=visit).exists():
+    #             data = json.loads(request.body) or None
+    #             form = VitalsForm(data)
+    #             if form.is_valid():
+    #                 vitals = form.save()
+    #                 serializer = VitalsSerializer(vitals)
+    #                 return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+    #             else:
+    #                 return JsonResponse(form.errors, status=400)
+
+    #         vitals = Vitals.objects.get(visit=visit)
+            
+    #         print(vitals)
+    #         # Parse the request body and create a form instance with partial=True
+    #         print(request.data)
+    #         form = VitalsSerializer(vitals, data=request.data, partial=True)
+    #         print(form.is_valid())
+    #         print(form.errors)
+    #         if form.is_valid():
+    #             form.save()
+    #             return HttpResponse(form.data, content_type="application/json")
+    #         else:
+    #             return JsonResponse(form.errors, status=400)
+
+    #     except Vitals.DoesNotExist:
+    #         return JsonResponse({"message": "Vitals record not found"}, status=404)
+    #     except DataError as e:
+    #         return JsonResponse({"message": str(e)}, status=400)
 
     def put(self, request, pk):
         '''
