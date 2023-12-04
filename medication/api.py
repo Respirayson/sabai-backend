@@ -68,8 +68,14 @@ class MedicationView(APIView):
         '''
         try:
             medication = Medication.objects.get(pk=pk)
-            serializer = MedicationSerializer(
-                medication, data=request.data, partial=True)
+
+            quantityChange = request.data.get("quantityChange");
+
+            data = {
+                "quantity": medication.quantity + quantityChange
+            }
+
+            serializer = MedicationSerializer(medication, data=data, partial=True)
 
             if serializer.is_valid():
                 serializer.save()

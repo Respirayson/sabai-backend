@@ -4,3 +4,5 @@ from clinicmodels.models import *
 
 admin.site.register(Visit)
 admin.site.register(Consult)
+admin.site.register(Medication)
+admin.site.register(Order)

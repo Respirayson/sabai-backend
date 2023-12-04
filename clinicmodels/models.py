@@ -62,8 +62,8 @@ class Vitals(models.Model):
         decimal_places=2, max_digits=5, default=0)
     blood_glucose = models.DecimalField(
         decimal_places=2, max_digits=5, default=0)
-    left_eye_degree = models.IntegerField(default=0)
-    right_eye_degree = models.IntegerField(default=0)
+    left_eye_degree = models.IntegerField(default=0) # change to textfield and test
+    right_eye_degree = models.IntegerField(default=0) # change to textfield and test
     eye_pressure = models.TextField(blank=True, null=True)
     cataracts = models.TextField(blank=True, null=True)
 
