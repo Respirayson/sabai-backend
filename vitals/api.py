@@ -50,10 +50,16 @@ class VitalsView(APIView):
             # Retrieve existing vitals record
             request.data.pop("diagnoses")
             visit = Visit.objects.get(pk=request.data['visit'])
+            for key in request.data.copy():
+                    if request.data[key] == '':
+                        request.data.pop(key)
 
             if not Vitals.objects.filter(visit=visit).exists():
+
                 data = request.data or None
                 form = VitalsForm(data)
+                print(form.errors)
+
                 if form.is_valid():
                     vitals = form.save()
                     serializer = VitalsSerializer(vitals)
