@@ -73,12 +73,12 @@ class OrderView(APIView):
         '''
         try:
             order = Order.objects.get(pk=pk)
-            form = OrderForm(json.loads(request.body)
-                             or None, instance=order)
+            form = OrderSerializer(order, data=request.data, partial=True)
+
+            print(form.is_valid())
             if form.is_valid():
-                order = form.save()
-                serializer = OrderSerializer(order)
-                return HttpResponse(json.dumps(serializer.data), content_type="application/json")
+                form.save()
+                return HttpResponse(form.data, content_type="application/json")
 
             else:
                 return JsonResponse(form.errors, status=400)
@@ -89,7 +89,7 @@ class OrderView(APIView):
 
     def delete(self, request, pk):
         try:
-            order = order.objects.get(pk=pk)
+            order = Order.objects.get(pk=pk)
             order.delete()
             return HttpResponse(status=204)
         except ObjectDoesNotExist as e:
