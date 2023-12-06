@@ -73,6 +73,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = ["http://localhost:3000"]
 
+CSRF_TRUSTED_ORIGINS = ["https://projectsabai-vza8.onrender.com:8000"]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
