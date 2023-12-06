@@ -98,16 +98,16 @@ WSGI_APPLICATION = "sabaibiometrics.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgres://sabai:JQPbAZByb8BiRonj7L0aPik55xRkpUbh@dpg-cjv683h5mpss739g4lv0-a/sabai_94if",
+        default="postgres://sabai_gnfs_user:MGbRjWK9fMrnSB5PYsHvcZ9BIMReXok1@dpg-clntdu4jtl8s73ah3tug-a.singapore-postgres.render.com/sabai_gnfs",
         conn_max_age=600,
     )
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #     'NAME': 'sabai',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '030105',
-    #     'HOST': 'localhost',
-    #     'PORT': '5432',
+    # "default": {
+    #     "ENGINE": "django.db.backends.postgresql_psycopg2",
+    #     "NAME": "sabai",
+    #     "USER": "postgres",
+    #     "PASSWORD": "Ninjacompany8!",
+    #     "HOST": "127.0.0.1",
+    #     "PORT": "5432",
     # }
 }
 
