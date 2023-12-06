@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +37,6 @@ REST_FRAMEWORK = {
     ],
 }
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,9 +46,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
     "corsheaders",
     "clinicmodels",
     "sabaibiometrics",
+    "whitenoise.runserver_nostatic",
+    "cloudinary",
 ]
 
 MIDDLEWARE = [
@@ -54,14 +62,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.auth.middleware.RemoteUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.RemoteUserBackend",
-    "django.contrib.auth.backends.ModelBackend",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "sabaibiometrics.urls"
@@ -92,16 +95,22 @@ WSGI_APPLICATION = "sabaibiometrics.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "sabai",
-        "USER": "postgres",
-        "PASSWORD": "Ninjacompany8!",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
-    }
+    "default": dj_database_url.config(
+        default="postgres://sabai:JQPbAZByb8BiRonj7L0aPik55xRkpUbh@dpg-cjv683h5mpss739g4lv0-a/sabai_94if",
+        conn_max_age=600,
+    )
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'sabai',
+    #     'USER': 'postgres',
+    #     'PASSWORD': '030105',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',
+    # }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -134,6 +143,9 @@ USE_I18N = True
 
 USE_L10N = True
 
+USE_TZ = True
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -148,3 +160,12 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+cloudinary.config(
+    cloud_name="dxy0byphl",
+    api_key="775264745986743",
+    api_secret="P-U_e5d6N-BaPk2Je1GJ5YqWD70",
+    secure=True,
+)

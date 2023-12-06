@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
 from django.utils import timezone
+from cloudinary.models import CloudinaryField
 
 
 class Patient(models.Model):
@@ -18,7 +19,7 @@ class Patient(models.Model):
     drug_allergy = models.TextField(default="None")
     parent = models.IntegerField(blank=True, null=True)
     face_encodings = models.CharField(max_length=3000, blank=True, null=True)
-    picture = models.ImageField(upload_to="static/images")
+    picture = CloudinaryField('image')
 
 
 class Fingerprint(models.Model):
